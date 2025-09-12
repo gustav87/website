@@ -6,7 +6,7 @@
         :firstHero="heroIndex === firstHeroIndex"
         :show-level="false"
         :size="size"
-        :isHighlight="filteredHeroes.includes(hero.id ?? -1)"
+        :highlight-heroes="highlightHeroes"
       />
     </v-col>
   </v-row>
@@ -41,10 +41,10 @@ export default defineComponent({
       type: Number,
       required: false
     },
-    filteredHeroes: {
-      type: Array as PropType<number[]>,
+    highlightHeroes: {
+      type: Boolean,
       required: false,
-      default: () => [],
+      default: false,
     },
   },
   setup(props) {

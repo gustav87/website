@@ -6,6 +6,7 @@ import { useRootStateStore } from "@/store/rootState/store";
 import ProfileService from "@/services/ProfileService";
 import MatchService from "@/services/MatchService";
 import { defineStore } from "pinia";
+import { useCommonStore } from "../common/store";
 
 export const usePlayerStore = defineStore("player", {
   state: (): PlayerState => ({
@@ -27,7 +28,6 @@ export const usePlayerStore = defineStore("player", {
     profileStatisticsGameMode: EGameMode.GM_1ON1,
     playerRace: undefined,
     opponentRace: undefined,
-    selectedHeroes: [] as number[],
     ongoingMatch: {} as Match,
     gameModeStats: [] as ModeStat[],
     raceStats: [] as RaceStat[],
@@ -91,6 +91,7 @@ export const usePlayerStore = defineStore("player", {
       this.SET_PAGE(page ?? 1);
       this.SET_LOADING_RECENT_MATCHES(true);
       const rootStateStore = useRootStateStore();
+      const commonStore = useCommonStore();
       const response = await MatchService.retrievePlayerMatches(
         this.page - 1,
         this.battleTag,
@@ -100,7 +101,7 @@ export const usePlayerStore = defineStore("player", {
         this.opponentRace ?? ERaceEnum.TOTAL,
         rootStateStore.gateway,
         this.selectedSeason?.id ?? -1,
-        this.selectedHeroes,
+        commonStore.selectedHeroes,
       );
       this.SET_TOTAL_MATCHES(response.count);
       this.SET_MATCHES(response.matches);
@@ -194,9 +195,6 @@ export const usePlayerStore = defineStore("player", {
     },
     SET_OPPONENT_RACE(opponentRace: ERaceEnum): void {
       this.opponentRace = opponentRace;
-    },
-    SET_SELECTED_HEROES(heroes: number[]): void {
-      this.selectedHeroes = heroes;
     },
     SET_ONGOING_MATCH(match: Match): void {
       this.ongoingMatch = match;

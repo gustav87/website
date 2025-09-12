@@ -5,6 +5,7 @@ import MatchService from "@/services/MatchService";
 import { defineStore } from "pinia";
 import { useRootStateStore } from "@/store/rootState/store";
 import { Season } from "@/store/ranking/types";
+import { useCommonStore } from "../common/store";
 
 export const useMatchStore = defineStore("match", {
   state: (): MatchState => ({
@@ -21,10 +22,10 @@ export const useMatchStore = defineStore("match", {
     sort: "startTimeDescending",
     selectedSeason: {} as Season,
     showHeroIcons: false,
-    selectedHeroFilter: [],
   }),
   actions: {
     async loadMatches() {
+      const commonStore = useCommonStore();
       let response: { count: number; matches: Match[] };
       const rootStateStore = useRootStateStore();
       if (this.status == MatchStatus.onGoing) {
@@ -52,7 +53,7 @@ export const useMatchStore = defineStore("match", {
           this.map,
           this.mmr,
           this.selectedSeason.id,
-          this.selectedHeroFilter,
+          commonStore.selectedHeroes,
         );
       }
       this.SET_TOTAL_MATCHES(response.count);
@@ -116,12 +117,6 @@ export const useMatchStore = defineStore("match", {
       this.SET_SHOW_HERO_ICONS(showHeroIcons);
     },
 
-    async setSelectedHeroFilter(heroes: number[]) {
-      this.SET_SELECTED_HERO_FILTER(heroes);
-      this.SET_PAGE(1);
-      await this.loadMatches();
-    },
-
     SET_PAGE(page: number): void {
       this.page = page;
     },
@@ -163,9 +158,6 @@ export const useMatchStore = defineStore("match", {
     },
     SET_SHOW_HERO_ICONS(showHeroIcons: boolean): void {
       this.showHeroIcons = showHeroIcons;
-    },
-    SET_SELECTED_HERO_FILTER(heroes: number[]): void {
-      this.selectedHeroFilter = heroes;
     },
   },
 });

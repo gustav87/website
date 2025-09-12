@@ -1,6 +1,6 @@
 <template>
   <div v-if="hero">
-    <div :class="['hero-icon-highlight-wrapper', { highlighted: isHighlighted }]">
+    <div :class="['hero-icon-highlight-wrapper', { highlighted: highlightHeroes && isHeroSelected() }]">
       <hero-picture :hero-icon="hero.name" :hero-level="hero.level" :size="size" />
     </div>
     <div v-if="showLevel" class="text-center hero-level-flag" :class="firstHeroOrNot">
@@ -10,9 +10,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 import { Hero } from "@/store/types";
 import HeroPicture from "@/components/match-details/HeroPicture.vue";
+import { usePlayerStore } from "@/store/player/store";
+import { useMatchStore } from "@/store/match/store";
+import { useCommonStore } from "@/store/common/store";
 
 export default defineComponent({
   name: "HeroIcon",
@@ -39,17 +42,26 @@ export default defineComponent({
       type: Number,
       required: false,
     },
-    isHighlight: {
+    highlightHeroes: {
       type: Boolean,
       required: false,
       default: false,
     },
   },
   setup(props) {
+    const commonStore = useCommonStore();
+    const selectedHeroes = computed<number[]>(() => commonStore.selectedHeroes);
     const firstHeroOrNot = ref<string>(props.firstHero ? "hero-level-flag-first-hero" : "hero-level-flag-second-hero");
+
+    function isHeroSelected(): boolean {
+      // console.log("HERO ID");
+      // console.log(props.hero.id);
+      // console.log(selectedHeroes.value[0]);
+      return selectedHeroes.value.includes(props.hero.id!);
+    }
     return {
       firstHeroOrNot,
-      isHighlighted: props.isHighlight,
+      isHeroSelected,
     };
   },
 });
@@ -86,7 +98,7 @@ export default defineComponent({
   border-radius: 2px;
   transition: border-color 0.2s;
 }
-.hero-icon-highlight-wrapper.highlighted {
+.highlighted {
   border-color: gold;
   box-shadow: 0 0 6px 2px rgba(255, 215, 0, 0.5);
 }

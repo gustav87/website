@@ -20,7 +20,6 @@ export type PlayerState = {
   profileStatisticsGameMode: EGameMode;
   playerRace: ERaceEnum | undefined;
   opponentRace: ERaceEnum | undefined;
-  selectedHeroes: number[];
   raceStats: RaceStat[];
   ongoingMatch: Match;
   gameModeStats: ModeStat[];

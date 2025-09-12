@@ -34,7 +34,7 @@
                       :is-anonymous="true"
                       :highlightedPlayer="alwaysLeftName"
                       :show-heroes="showHeroes"
-                      :filteredHeroes="filteredHeroes"
+                      :highlight-heroes="highlightHeroes"
                     ></team-match-info>
                   </v-col>
                 </v-row>
@@ -46,7 +46,7 @@
                       :unfinishedMatch="unfinished"
                       :is-anonymous="true"
                       :show-heroes="showHeroes"
-                      :filteredHeroes="filteredHeroes"
+                      :highlight-heroes="highlightHeroes"
                     ></team-match-info>
                   </v-col>
                 </v-row>
@@ -64,7 +64,7 @@
                     :left="true"
                     :highlightedPlayer="nameIfNonSolo(item)"
                     :show-heroes="showHeroes"
-                    :filteredHeroes="filteredHeroes"
+                    :highlight-heroes="highlightHeroes"
                   ></team-match-info>
                 </v-col>
                 <v-col cols="1" align-self="center" class="py-2">
@@ -77,7 +77,7 @@
                     :team="alwaysLeftName ? getOpponentTeam(item) : getLoser(item)"
                     :unfinishedMatch="unfinished"
                     :show-heroes="showHeroes"
-                    :filteredHeroes="filteredHeroes"
+                    :highlight-heroes="highlightHeroes"
                   ></team-match-info>
                 </v-col>
               </v-row>
@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, StyleValue, PropType } from "vue";
+import { computed, defineComponent, StyleValue } from "vue";
 import { useI18n } from "vue-i18n-bridge";
 import { EGameMode, Match, PlayerInTeam, Team } from "@/store/types";
 import { GAME_MODES_FFA } from "@/store/constants";
@@ -180,10 +180,10 @@ export default defineComponent({
       required: false,
       default: false,
     },
-    filteredHeroes: {
-      type: Array as PropType<number[]>,
+    highlightHeroes: {
+      type: Boolean,
       required: false,
-      default: () => [],
+      default: false,
     },
   },
   setup(props, context) {

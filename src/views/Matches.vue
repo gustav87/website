@@ -17,7 +17,7 @@
             <mmr-select v-if="unfinished" @mmrChanged="mmrChanged" :mmr="mmr"></mmr-select>
             <sort-select v-if="unfinished"></sort-select>
             <season-select v-if="!unfinished" @seasonSelected="selectSeason"></season-select>
-            <hero-select v-if="!unfinished && showHeroSelect" @heroChanged="heroChanged" :value="filteredHeroes"></hero-select>
+            <hero-select v-if="!unfinished && showHeroSelect" @heroChanged="heroChanged"></hero-select>
             <hero-icon-toggle :showHeroes="showHeroIcons" @update:showHeroes="toggleShowHeroIcons"
               :unfinished="unfinished" />
           </v-card-text>
@@ -29,7 +29,7 @@
             :unfinished="unfinished"
             :is-player-profile="false"
             :show-heroes="showHeroIcons"
-            :filteredHeroes="filteredHeroes"
+            :highlight-heroes="true"
           ></matches-grid>
         </v-card>
       </v-col>
@@ -57,6 +57,7 @@ import { MapInfo } from "@/store/common/types";
 import SeasonSelect from "@/components/common/SeasonSelect.vue";
 import HeroSelect from "@/components/matches/HeroSelect.vue";
 import HeroIconToggle from "@/components/matches/HeroIconToggle.vue";
+import { useCommonStore } from "@/store/common/store";
 
 export default defineComponent({
   name: "MatchesView",
@@ -75,11 +76,11 @@ export default defineComponent({
     const overallStatsStore = useOverallStatsStore();
     const rankingsStore = useRankingStore();
     const matchStore = useMatchStore();
+    const commonStore = useCommonStore();
     let _intervalRefreshHandle: NodeJS.Timeout;
 
     const matches = computed<Match[]>(() => matchStore.matches);
     const totalMatches = computed<number>(() => matchStore.totalMatches);
-    const filteredHeroes = computed<number[]>(() => matchStore.selectedHeroFilter);
     const currentSeason = computed<Season>(() => rankingsStore.seasons[0]);
     const unfinished = computed<boolean>(() => matchStore.status === MatchStatus.onGoing);
     const gameMode = computed<EGameMode>(() => matchStore.gameMode);
@@ -183,7 +184,9 @@ export default defineComponent({
     }
 
     async function heroChanged(heroes: number[]): Promise<void> {
-      await matchStore.setSelectedHeroFilter(heroes);
+      commonStore.setSelectedHeroes(heroes);
+      matchStore.SET_PAGE(1);
+      await matchStore.loadMatches();
     }
 
     return {
@@ -199,7 +202,6 @@ export default defineComponent({
       unfinished,
       matches,
       totalMatches,
-      filteredHeroes,
       onPageChanged,
       showHeroIcons,
       toggleShowHeroIcons,

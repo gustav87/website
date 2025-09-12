@@ -14,4 +14,5 @@ export type MapInfo = {
 
 export type CommonState = {
   heroFilters: HeroFilter[];
+  selectedHeroes: number[];
 };

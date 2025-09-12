@@ -6,6 +6,7 @@ import HeroService from "@/services/HeroService";
 export const useCommonStore = defineStore("commonState", {
   state: (): CommonState => ({
     heroFilters: [] as HeroFilter[],
+    selectedHeroes: [] as number[],
   } as CommonState),
   actions: {
     async loadHeroFilters() {
@@ -19,8 +20,14 @@ export const useCommonStore = defineStore("commonState", {
         return undefined;
       }
     },
+    setSelectedHeroes(heroes: number[]): void {
+      this.SET_SELECTED_HEROES(heroes);
+    },
     SET_HERO_FILTERS(heroFilters: HeroFilter[]): void {
       this.heroFilters = heroFilters;
+    },
+    SET_SELECTED_HEROES(heroes: number[]): void {
+      this.selectedHeroes = heroes;
     },
   },
 });

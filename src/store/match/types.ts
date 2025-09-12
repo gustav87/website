@@ -16,7 +16,6 @@ export type MatchState = {
   sort: string;
   selectedSeason: Season;
   showHeroIcons: boolean;
-  selectedHeroFilter: number[];
 };
 
 export enum MatchStatus {
