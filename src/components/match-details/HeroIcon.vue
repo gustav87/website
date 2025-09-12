@@ -13,8 +13,6 @@
 import { computed, defineComponent, PropType, ref } from "vue";
 import { Hero } from "@/store/types";
 import HeroPicture from "@/components/match-details/HeroPicture.vue";
-import { usePlayerStore } from "@/store/player/store";
-import { useMatchStore } from "@/store/match/store";
 import { useCommonStore } from "@/store/common/store";
 
 export default defineComponent({
@@ -54,11 +52,9 @@ export default defineComponent({
     const firstHeroOrNot = ref<string>(props.firstHero ? "hero-level-flag-first-hero" : "hero-level-flag-second-hero");
 
     function isHeroSelected(): boolean {
-      // console.log("HERO ID");
-      // console.log(props.hero.id);
-      // console.log(selectedHeroes.value[0]);
       return selectedHeroes.value.includes(props.hero.id!);
     }
+
     return {
       firstHeroOrNot,
       isHeroSelected,
